@@ -1,0 +1,1 @@
+IEEE 754 - 2008 compliant single precision floating point multiplier architecture for FPGA devices.
