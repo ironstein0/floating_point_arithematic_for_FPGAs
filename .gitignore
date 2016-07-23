@@ -1,4 +1,4 @@
 paper/
 references/
-project/playing_with_floating_point_numbers/src/bitstring/
+project/playing_with_floating_point_numbers/src/bitstring/*
 !project/playing_with_floating_point_numbers/src/bitstring/bitstring.py
