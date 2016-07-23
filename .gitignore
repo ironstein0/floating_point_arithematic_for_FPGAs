@@ -1,3 +1,11 @@
+############
+# FILE TYPES
+############
+*.pyc
+
+#############
+# DIRECTORIES 
+#############
 paper/
 references/
 project/playing_with_floating_point_numbers/src/bitstring/*
