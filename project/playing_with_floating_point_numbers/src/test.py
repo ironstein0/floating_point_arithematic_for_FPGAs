@@ -1,4 +1,2 @@
 from float import Float
-f = Float()
-
-print(f._datastore)
+f = Float(1.0000)
