@@ -75,8 +75,6 @@ import operator
 import collections
 import array
 
-from utils import debug
-
 byteorder = sys.byteorder
 
 bytealigned = False
