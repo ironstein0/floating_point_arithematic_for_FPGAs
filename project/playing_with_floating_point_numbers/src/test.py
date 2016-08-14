@@ -1,2 +1,2 @@
-from float import Float
-f = Float(1.0000, length=64)
+from Float import Float
+f = Float(1, length=64)
