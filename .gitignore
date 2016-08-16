@@ -1,12 +1,6 @@
-############
-# FILE TYPES
-############
+// file types
 *.pyc
 
-#############
-# DIRECTORIES 
-#############
-paper/
+// directories
 references/
-project/src/bitstring/*
-!project/src/bitstring/bitstring.py
+paper/
