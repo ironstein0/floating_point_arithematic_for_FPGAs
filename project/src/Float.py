@@ -136,6 +136,7 @@ class Float(bs.BitArray) :
 			bitstring.CreationError -- when assigning a string with length neither 23 nor 52
 
 		"""
+		
 		if self.len == 32 : 
 			return self._getbin()[9:]
 		return self._getbin()[12:]
@@ -161,6 +162,7 @@ class Float(bs.BitArray) :
 			bitstring.CreaionError -- when assigning a string with length neither 8 nor 11
 
 		"""
+
 		if self.len == 32 : 
 			return self._getbin()[1:9]
 		return self._getbin()[1:12]
@@ -180,11 +182,13 @@ class Float(bs.BitArray) :
 	@property
 	def exponent_field(self):
 		""" int -- raw exponent field value"""
+
 		return int(self.raw_exponent, 2)
 
 	@property
 	def exponent_value(self):
 		""" int -- biased exponent value"""
+
 		if self.len == 32 : 
 			return self.exponent_field - 127
 		else : 
@@ -192,7 +196,14 @@ class Float(bs.BitArray) :
 
 	@property 
 	def raw_sign(self) : 
-		""" str -- string representation of raw sign bit of the Float instance"""
+		""" str -- string representation of raw sign bit of the Float instance
+		
+		Raises: 
+			bitstring.CreationError -- when assigning value that is not `str`
+			bitstring.CreaionError -- when assigning a string with length other than 1
+		
+		"""
+
 		return self._getbin()[0]
 
 	@raw_sign.setter
