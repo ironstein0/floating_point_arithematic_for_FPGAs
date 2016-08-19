@@ -8,6 +8,7 @@ sys.path.insert(0, '..')
 from src.Float import Float
 from src.bitstring import bitstring
 from src.IterativeLogarithmicMultiplier import IntegerIterativeLogarithmicMultiplier
+from src.IterativeLogarithmicMultiplier import FixedWidthIntegerMultiplier
 from src.IterativeLogarithmicMultiplier import FloatingPointIterativeLogarithmicMultiplier
 
 class TestIntegerIterativeLogarithmicMultiplier() : 
@@ -263,6 +264,57 @@ class TestIntegerIterativeLogarithmicMultiplier() :
 				self.assertEqual(self.multiplier.validateBinary(p0_3_getd), True)
 				self.assertEqual(p0_3_reqd, int(p0_3_getd, base=2))
 
+class TestFixedWidthIntegerMultiplier() : 
+
+	class Constructor(unittest.TestCase) : 
+
+		def testConstructor(self) : 
+			m = FixedWidthIntegerMultiplier(10, 100)
+			self.assertEqual(m.inputBits, 10)
+			self.assertEqual(m.outputBits, 100)
+			self.assertEqual(m.correctionIterations, 1)
+			self.assertEqual(isinstance(m.multiplier, IntegerIterativeLogarithmicMultiplier), True)
+
+			m = FixedWidthIntegerMultiplier(10, 100, 3)
+			self.assertEqual(m.correctionIterations, 3)
+
+		def testErrors(self) : 
+			self.assertRaises(ValueError, FixedWidthIntegerMultiplier, 's', 10)
+			self.assertRaises(ValueError, FixedWidthIntegerMultiplier, 10, 's')
+			self.assertRaises(ValueError, FixedWidthIntegerMultiplier, 10, 10.2)
+			self.assertRaises(ValueError, FixedWidthIntegerMultiplier, 10, [])
+
+	class Multiply(unittest.TestCase) : 
+
+		def setUp(self) : 
+			self.multiplier = FixedWidthIntegerMultiplier(100, 10)	
+
+		""" TODO : 
+			write testOperation
+		"""
+
+		def testOperation(self) : 
+			for i in range(100) : 
+				n1 = random.randint(1, 1000000000000)
+				n2 = random.randint(1, 1000000000000)
+				result_reqd = n1*n2
+				result_getd = self.multiplier.multiply(bin(n1)[2:], bin(n2)[2:], 19)
+				self.assertEqual(self.multiplier.validateBinary(result_getd), True)
+				self.assertEqual(int(result_getd, base=2) <= result_reqd, True)
+				self.assertEqual()
+				relativeError = self.mod(result_reqd - int(result_getd, base=2))*1.0 / result_reqd
+				
+				# plotting data
+				# if relativeError != 0 : 
+				# 	print(str(n1) + ' * ' + str(n2) + ' -- ' + str(result_reqd) + ' / ' + str(int(result_getd, base=2)) + ' -- ' + str(relativeError))
+
+
+		def testErrors(self) : 
+			self.assertRaises(ValueError, self.multiplier.multiply, '1010', '103')
+			self.assertRaises(ValueError, self.multiplier.multiply, '2', '10010')
+			self.assertRaises(ValueError, self.multiplier.multiply, '1001', '100')
+			self.assertRaises(ValueError, self.multiplier.multiply, '10', '1001')
+
 class TestFloatingPointIterativeLogarithmicMultiplier() :
 	
 	class getBinarySignificand(unittest.TestCase) : 
@@ -279,19 +331,32 @@ if __name__ == '__main__' :
 		ColourTextTestRunner(verbosity=2).run(suite)
 
 	suiteList = [
-		TestIntegerIterativeLogarithmicMultiplier.Constructor,
-		TestIntegerIterativeLogarithmicMultiplier.Multiply, 
-		TestIntegerIterativeLogarithmicMultiplier.P0_approx,
-		TestIntegerIterativeLogarithmicMultiplier.ValidateBinary,
-		TestIntegerIterativeLogarithmicMultiplier.PriorityEncoder,
-		TestIntegerIterativeLogarithmicMultiplier.Decoder,
-		TestIntegerIterativeLogarithmicMultiplier.ClearBit,
-		TestIntegerIterativeLogarithmicMultiplier.ShiftLeft, 
-		TestIntegerIterativeLogarithmicMultiplier.Add, 
-		TestIntegerIterativeLogarithmicMultiplier.P0_1,
-		TestIntegerIterativeLogarithmicMultiplier.P0_2,
-		TestIntegerIterativeLogarithmicMultiplier.P0_3,
-		# TestFloatingPointIterativeLogarithmicMultiplier.getBinarySignificand
+		########################################
+		# IntegerIterativeLogarithmicMultiplier 
+		########################################
+		# TestIntegerIterativeLogarithmicMultiplier.Constructor,
+		# TestIntegerIterativeLogarithmicMultiplier.Multiply, 
+		# TestIntegerIterativeLogarithmicMultiplier.P0_approx,
+		# TestIntegerIterativeLogarithmicMultiplier.ValidateBinary,
+		# TestIntegerIterativeLogarithmicMultiplier.PriorityEncoder,
+		# TestIntegerIterativeLogarithmicMultiplier.Decoder,
+		# TestIntegerIterativeLogarithmicMultiplier.ClearBit,
+		# TestIntegerIterativeLogarithmicMultiplier.ShiftLeft, 
+		# TestIntegerIterativeLogarithmicMultiplier.Add, 
+		# TestIntegerIterativeLogarithmicMultiplier.P0_1,
+		# TestIntegerIterativeLogarithmicMultiplier.P0_2,
+		# TestIntegerIterativeLogarithmicMultiplier.P0_3,
+		
+		#######################
+		# FixedWidthMultiplier 
+		#######################
+		TestFixedWidthIntegerMultiplier.Constructor, 
+		TestFixedWidthIntegerMultiplier.Multiply,
+		
+		#############################################
+		# FloatingPointIterativeLogarithmicMultiplier 
+		#############################################
+		#TestFloatingPointIterativeLogarithmicMultiplier.getBinarySignificand
 	]
 
 	for suite in suiteList : 
