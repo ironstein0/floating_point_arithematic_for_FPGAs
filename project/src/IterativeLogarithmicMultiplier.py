@@ -27,6 +27,7 @@ class IntegerIterativeLogarithmicMultiplier() :
 		make the documentation strings more consistent
 		make the documentation strings more mathematically rich (explain the concepts)
 		add examples for all the non obvious methods of this class	
+		make error strings more informative
 	"""
 
 	def __init__(self) : 
@@ -292,6 +293,69 @@ class FixedWidthIntegerMultiplier() :
 	Implement Stricter constraints for the IntegerIterativeLogarithmicMultiplier 
 	with respect to number of input bits, number of result bits, etc.
 	"""	
+
+	def __init__(self, inputBits, outputBits, correctionIterations=1) :
+		"""
+		Args :
+			inputBits(int) -- width of the binary string representing the numbers
+				input to the multiplier
+			outputBits(int) -- width of the binary string representing the output
+				of the multiplier
+			correctionIterations(int) -- number of correction terms to use in the 
+				implementation of iterative logarithmic multiplier
+
+		Raises : 
+			ValueError -- If inputBits is not an integer
+			ValueError -- If outputBits is not an integer
+			ValueError -- If correctionIterations is not an integer
+
+		"""
+
+		if type(inputBits) != int : 
+			raise ValueError('"inputBits" should be an integer')
+		if type(outputBits) != int : 
+			raise ValueError('"outputBits" should be an integer')
+		if type(correctionIterations) != int : 
+			raise ValueError('"correctionIterations" should be an integer')
+
+		self.inputBits = inputBits
+		self.outputBits = outputBits
+		self.correctionIterations = correctionIterations
+		self.multiplier = IntegerIterativeLogarithmicMultiplier()
+
+	def multiply(self, n1, n2) : 
+		"""multipliers two numbers represented by binary strings n1 and n2
+
+		Args : 
+			n1(str) -- a valid binary string of width `inputBits`
+			n2(str) -- a vaild binary string of width `inputBits`
+
+		Returns : 
+			str -- a binary string representing the product of n1 and n2
+				of width `outputBits`
+
+		Note : 
+			If `outputBits` is less than the width of the resultant binary string
+			generated, the rightmost bits will be truncated
+
+		Raises :
+			ValueError -- If width of n1 is not `inputBits`
+			ValueError -- If width of n2 is not `inputBits`
+	
+		"""
+
+		if len(n1) != self.inputBits : 
+			raise ValueError('width of n1 should be "{0}" bits, but is "{1}" bits'.format(self.inputBits, len(n1)))		
+		if len(n2) != self.inputBits : 
+			raise ValueError('width of n1 should be "{0}" bits, but is "{1}" bits'.format(self.inputBits, len(n1)))
+
+		output = self.multiplier.multiply(n1, n2, self.correctionIterations)
+		if len(output) > self.outputBits : 
+			output = output[:self.outputBits]
+		else : 
+			output = '0'*(self.outputBits - len(output)) + output
+		return output
+
 
 class FloatingPointIterativeLogarithmicMultiplier() : 
 
