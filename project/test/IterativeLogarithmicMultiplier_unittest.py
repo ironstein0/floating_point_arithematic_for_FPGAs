@@ -45,10 +45,38 @@ class TestIntegerIterativeLogarithmicMultiplier() :
 				return -num
 			return num
 
+		def checkIfLessThanOrEqual(self, n1, n2) : 
+			if n2 <= n1 : 
+				return True
+			return False
+
 		def testOperation(self) : 
-			for i in range(100) : 
-				n1 = random.randint(1, 100)
-				n2 = random.randint(1, 100)
+			# for i in range(100000) : 
+			# 	n1 = random.randint(1, 100000000)
+			# 	n2 = random.randint(1, 100000000)
+			# 	k1 = int(self.multiplier.priorityEncoder(bin(n1)[2:]), base=2)
+			# 	k2 = int(self.multiplier.priorityEncoder(bin(n2)[2:]), base=2)
+			# 	p0_1 = self.multiplier.p0_1(bin(n1)[2:], bin(n2)[2:])
+			# 	p0_2 = self.multiplier.p0_2(bin(n1)[2:], bin(n2)[2:])
+			# 	p0_3 = self.multiplier.p0_3(bin(n1)[2:], bin(n2)[2:])
+			# 	# p0_1 = 2**(k1+k2)
+			# 	# p0_2 = (2**k2)*(n1 - (2**k1))
+			# 	# p0_3 = (2**k1)*(n2 - (2**k2))
+			# 	t1 = self.multiplier.add(self.multiplier.p0_1(bin(n1)[2:], bin(n2)[2:]), self.multiplier.p0_2(bin(n1)[2:], bin(n2)[2:]))
+			# 	t1 = t1[1] + t1[0]
+			# 	t2 = self.multiplier.add(self.multiplier.p0_3(bin(n1)[2:], bin(n2)[2:]), t1)
+			# 	t2 = t2[1] + t2[0]
+			# 	p0_approx = int(t2, base=2)
+
+			# 	# p0_approx = int(p0_1, base=2) + int(p0_2, base=2) + int(p0_3, base=2)
+			# 	p0_exact = n1*n2
+				
+			# 	print(str(n1) + ' * ' + str(n2) + ' -- ' + str(p0_exact) + ' / ' + str(p0_approx))
+			# 	self.assertEqual(self.checkIfLessThanOrEqual(p0_exact, p0_approx), True)
+
+			for i in range(10000) : 
+				n1 = random.randint(1, 10000)
+				n2 = random.randint(1, 10000)
 				result_reqd = n1*n2
 				result_getd = self.multiplier.p0_approx(bin(n1)[2:], bin(n2)[2:])
 				self.assertEqual(self.multiplier.validateBinary(result_getd), True)
@@ -61,7 +89,7 @@ class TestIntegerIterativeLogarithmicMultiplier() :
 				relativeError = self.mod(result_reqd - int(result_getd, base=2))*1.0 / result_reqd
 				print(str(n1) + ' * ' + str(n2) + ' -- ' + str(result_reqd) + ' / ' + str(int(result_getd, base=2)) + ' -- ' + str(relativeError))
 
-				self.assertEqual(checkIfLessThan(result_reqd, int(result_getd, base=2)), True)	
+				self.assertEqual(self.checkIfLessThanOrEqual(result_reqd, int(result_getd, base=2)), True)
 
 	class ValidateBinary(unittest.TestCase) : 
 
@@ -182,7 +210,7 @@ class TestIntegerIterativeLogarithmicMultiplier() :
 			self.multiplier = IntegerIterativeLogarithmicMultiplier()
 
 		def testOperation(self) : 
-			for i in range(1000) : 	
+			for i in range(10000) : 	
 				n1 = random.randint(0, 1000000000000000000)
 				n2 = random.randint(0, 1000000000000000000)
 				sum_, carry = self.multiplier.add(bin(n1)[2:], bin(n2)[2:])
