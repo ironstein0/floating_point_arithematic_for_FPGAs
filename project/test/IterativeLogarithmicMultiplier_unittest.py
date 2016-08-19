@@ -34,15 +34,25 @@ class TestIntegerIterativeLogarithmicMultiplier() :
 				self.assertEqual(self.multiplier.validateBinary(result_getd), True)
 				self.assertEqual(int(result_getd, base=2) <= result_reqd, True)
 				relativeError = self.mod(result_reqd - int(result_getd, base=2))*1.0 / result_reqd
-				if relativeError != 0 : 
-					print(str(n1) + ' * ' + str(n2) + ' -- ' + str(result_reqd) + ' / ' + str(int(result_getd, base=2)) + ' -- ' + str(relativeError))
+				
+				# plotting data
+				# if relativeError != 0 : 
+				# 	print(str(n1) + ' * ' + str(n2) + ' -- ' + str(result_reqd) + ' / ' + str(int(result_getd, base=2)) + ' -- ' + str(relativeError))
 
 		def testErrors(self) : 
+			# n1 and n2
 			self.assertRaises(ValueError, self.multiplier.multiply, 23, '100')
 			self.assertRaises(ValueError, self.multiplier.multiply, '100101', [])
 			self.assertRaises(ValueError, self.multiplier.multiply, {}, 1.9)
 			self.assertRaises(ValueError, self.multiplier.multiply, '100020', '100')
 			self.assertRaises(ValueError, self.multiplier.multiply, '100001', '105')
+
+			# correctionIterations
+			self.assertRaises(ValueError, self.multiplier.multiply, '10', '0', 3.4)
+			self.assertRaises(ValueError, self.multiplier.multiply, '10', '0', 'st')
+			self.assertRaises(ValueError, self.multiplier.multiply, '10', '0', '20')
+			self.assertRaises(ValueError, self.multiplier.multiply, '10', '0', [])
+
 
 	class P0_approx(unittest.TestCase) : 
 
@@ -217,7 +227,7 @@ class TestIntegerIterativeLogarithmicMultiplier() :
 				k1 = int(self.multiplier.priorityEncoder(bin(n1)[2:]), base=2)
 				k2 = int(self.multiplier.priorityEncoder(bin(n2)[2:]), base=2)
 				p0_1_reqd = 2**(k1+k2)
-				p0_1_getd = self.multiplier.p0_1(bin(n1)[2:], bin(n2)[2:])
+				p0_1_getd = self.multiplier._p0_1(bin(n1)[2:], bin(n2)[2:])
 				self.assertEqual(self.multiplier.validateBinary(p0_1_getd), True)
 				self.assertEqual(p0_1_reqd, int(p0_1_getd, base=2))
 
@@ -233,7 +243,7 @@ class TestIntegerIterativeLogarithmicMultiplier() :
 				k1 = int(self.multiplier.priorityEncoder(bin(n1)[2:]), base=2)
 				k2 = int(self.multiplier.priorityEncoder(bin(n2)[2:]), base=2)
 				p0_2_reqd = (n1-(2**k1))*(2**k2)
-				p0_2_getd = self.multiplier.p0_2(bin(n1)[2:], bin(n2)[2:])
+				p0_2_getd = self.multiplier._p0_2(bin(n1)[2:], bin(n2)[2:])
 				self.assertEqual(self.multiplier.validateBinary(p0_2_getd), True)
 				self.assertEqual(p0_2_reqd, int(p0_2_getd, base=2))
 
@@ -249,7 +259,7 @@ class TestIntegerIterativeLogarithmicMultiplier() :
 				k1 = int(self.multiplier.priorityEncoder(bin(n1)[2:]), base=2)
 				k2 = int(self.multiplier.priorityEncoder(bin(n2)[2:]), base=2)
 				p0_3_reqd = (n2-(2**k2))*(2**k1)
-				p0_3_getd = self.multiplier.p0_3(bin(n1)[2:], bin(n2)[2:])
+				p0_3_getd = self.multiplier._p0_3(bin(n1)[2:], bin(n2)[2:])
 				self.assertEqual(self.multiplier.validateBinary(p0_3_getd), True)
 				self.assertEqual(p0_3_reqd, int(p0_3_getd, base=2))
 
