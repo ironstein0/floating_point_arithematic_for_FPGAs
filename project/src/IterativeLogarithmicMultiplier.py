@@ -23,7 +23,7 @@ class IntegerIterativeLogarithmicMultiplier() :
 	def __init__(self) : 
 		pass
 
-	def multiply(self, n1, n2, correctionIterations) : 
+	def multiply(self, n1, n2, correctionIterations=1) : 
 		"""Multiply two floating point numbers
 
 		Args: 
@@ -46,12 +46,24 @@ class IntegerIterativeLogarithmicMultiplier() :
 			raise ValueError('n1 and n2 should be valid binary strings')
 
 		product = '0'
+		# print('===============================')
+		# print(int(n1, base=2) * int(n2, base=2))
 		for iterationNumber in range(correctionIterations) : 
+			# print('--------------------------------')
+			# print(n1 + ' : ' + n2)
+			# calculate k1 and k2
 			k1 = int(self.priorityEncoder(n1), base=2)
 			k2 = int(self.priorityEncoder(n2), base=2)
-			p0_approx = self.add(product, self.p0_approx(n1, n2))
-			product = self.add(product, p0_approx[1] + p0_approx[0])
+
+			# calculating approximate value
+			p0_approx = self.p0_approx(n1, n2)
+			# print('p0_approx : ' + str(int(p0_approx, base=2)))
+
+			# adding error term to the approx value
+			product = self.add(product, p0_approx)
 			product = product[1] + product[0]
+
+			# n1 and n2 for the next iteration
 			n1 = self.clearBit(n1, k1)
 			n2 = self.clearBit(n2, k2)
 
