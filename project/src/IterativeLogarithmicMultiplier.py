@@ -62,9 +62,15 @@ class IntegerIterativeLogarithmicMultiplier() :
 	def p0_approx(self, n1, n2) : 
 		assert self.validateBinary(n1)
 		assert self.validateBinary(n2)
+
+		p0_1 = self.p0_1(n1, n2)
+		p0_2 = self.p0_2(n1, n2)
+		p0_3 = self.p0_3(n1, n2)
 		t1 = self.add(self.p0_1(n1, n2), self.p0_2(n1, n2))
-		t2 = self.add(t1[1] + t1[0], self.p0_3(n1, n1))
-		return t2[1] + t2[0]
+		t1 = t1[1] + t1[0]
+		t2 = self.add(self.p0_3(n1, n2), t1)
+		t2 = t2[1] + t2[0]
+		return t2
 
 	def p0_1(self, n1, n2) : 
 		# find 2**(k1+k2)
@@ -76,11 +82,11 @@ class IntegerIterativeLogarithmicMultiplier() :
 		return p0_1
 
 	def p0_2(self, n1, n2) :
-		# find (2**p2)*(n1 - 2**p1)
+		# find (2**k2)*(n1 - 2**k1)
 
-		# k1
+		# k2
 		t1 = self.priorityEncoder(n2)
-		# n1 - 2**p1
+		# n1 - 2**k1
 		t2 = self.clearBit(n1, int(self.priorityEncoder(n1), base=2))
 		p0_2 = self.shiftLeft(t2, int(t1, base=2), len(n1) + len(n2))
 		return p0_2
@@ -90,7 +96,7 @@ class IntegerIterativeLogarithmicMultiplier() :
 
 		# k2
 		t1 = self.priorityEncoder(n1)
-		# n2 - 2**p2
+		# n2 - 2**k2
 		t2 = self.clearBit(n2, int(self.priorityEncoder(n2), base=2))
 		p0_3 = self.shiftLeft(t2, int(t1, base=2), len(n1) + len(n2))
 		return p0_3
