@@ -287,27 +287,57 @@ class TestFixedWidthIntegerMultiplier() :
 	class Multiply(unittest.TestCase) : 
 
 		def setUp(self) : 
-			self.multiplier = FixedWidthIntegerMultiplier(100, 10)	
+			self.inputBits = 24
+			self.outputBits = 48
+			self.correctionIterations = 1
+			self.multiplier = FixedWidthIntegerMultiplier(self.inputBits, self.outputBits, self.correctionIterations)
 
-		""" TODO : 
-			write testOperation
-		"""
+		def makeFixedWidth(self, n, width) :
+			assert IntegerIterativeLogarithmicMultiplier().validateBinary(n)
+			assert len(n) <= width
+
+			returnValue = '0'*(width - len(n)) + n
+			# self.assertEqual(int(returnValue, base=2), int(n, base=2))
+			return '0'*(width - len(n)) + n
+
+		def mod(self, num) : 
+			if num < 0 : 
+				return -num
+			return num
 
 		def testOperation(self) : 
-			for i in range(100) : 
-				n1 = random.randint(1, 1000000000000)
-				n2 = random.randint(1, 1000000000000)
+			n1 = '100000001001010100000000'
+			n2 = '100100111010100111100000'
+			result_reqd = int(n1, base=2)*int(n2, base=2)
+			result_getd = self.multiplier.multiply(n1, n2)
+			print(result_getd)
+			print(len(result_getd))
+			relativeError = self.mod(result_reqd - int(result_getd, base=2))*1.0 / result_reqd
+				
+			# plotting data
+			if relativeError != 0 : 
+				print('\n\t\t' + str(n1) + ' * ' + str(n2) + ' -- ' + str(result_reqd) + ' / ' + str(int(result_getd, base=2)) + ' -- ' + str(relativeError))
+
+			raise SystemExit(0)
+
+			for i in range(1000) : 
+				n1 = random.randint(1, 10000000)
+				n2 = random.randint(1, 10000000)
+
 				result_reqd = n1*n2
-				result_getd = self.multiplier.multiply(bin(n1)[2:], bin(n2)[2:], 19)
-				self.assertEqual(self.multiplier.validateBinary(result_getd), True)
+
+				n1 = self.makeFixedWidth(bin(n1)[2:], self.inputBits)
+				n2 = self.makeFixedWidth(bin(n2)[2:], self.inputBits)
+
+				result_getd = self.multiplier.multiply(n1, n2)
+				self.assertEqual(IntegerIterativeLogarithmicMultiplier().validateBinary(result_getd), True)
 				self.assertEqual(int(result_getd, base=2) <= result_reqd, True)
-				self.assertEqual()
+				self.assertEqual(len(result_getd), self.outputBits)
 				relativeError = self.mod(result_reqd - int(result_getd, base=2))*1.0 / result_reqd
 				
 				# plotting data
-				# if relativeError != 0 : 
-				# 	print(str(n1) + ' * ' + str(n2) + ' -- ' + str(result_reqd) + ' / ' + str(int(result_getd, base=2)) + ' -- ' + str(relativeError))
-
+				if relativeError != 0 : 
+					print('\n\t\t' + str(n1) + ' * ' + str(n2) + ' -- ' + str(result_reqd) + ' / ' + str(int(result_getd, base=2)) + ' -- ' + str(relativeError))
 
 		def testErrors(self) : 
 			self.assertRaises(ValueError, self.multiplier.multiply, '1010', '103')
@@ -350,7 +380,7 @@ if __name__ == '__main__' :
 		#######################
 		# FixedWidthMultiplier 
 		#######################
-		TestFixedWidthIntegerMultiplier.Constructor, 
+		# TestFixedWidthIntegerMultiplier.Constructor, 
 		TestFixedWidthIntegerMultiplier.Multiply,
 		
 		#############################################

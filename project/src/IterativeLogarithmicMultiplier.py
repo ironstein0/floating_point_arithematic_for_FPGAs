@@ -78,7 +78,11 @@ class IntegerIterativeLogarithmicMultiplier() :
 
 			# adding error term to the approx value
 			product = self.add(product, p0_approx)
-			product = product[1] + product[0]
+			if product[1] == '1' : 
+				product = '1' + product[0]
+			else : 
+				product = product[0]
+			# print(len(product))
 
 			# n1 and n2 for the next iteration
 			n1 = self.clearBit(n1, k1)
@@ -114,9 +118,15 @@ class IntegerIterativeLogarithmicMultiplier() :
 		_p0_2 = self._p0_2(n1, n2)
 		_p0_3 = self._p0_3(n1, n2)
 		t1 = self.add(self._p0_1(n1, n2), self._p0_2(n1, n2))
-		t1 = t1[1] + t1[0]
+		if t1[1] == '1' : 
+			t1 = '1' + t1[0]
+		else :
+			t1 = t1[0]
 		t2 = self.add(self._p0_3(n1, n2), t1)
-		t2 = t2[1] + t2[0]
+		if t2[1] == '1' : 
+			t2 = '1' + t2[0]
+		else : 
+			t2 = t2[0]
 		return t2
 
 	def _p0_1(self, n1, n2) : 
@@ -280,6 +290,7 @@ class IntegerIterativeLogarithmicMultiplier() :
 		sum_ = bin(int(n1, base=2) + int(n2, base=2))[2:]
 		carry = '0'
 		sumLength = max(len(n1), len(n2))
+		assert len(sum_) <= sumLength + 1
 		if len(sum_) <= sumLength : 
 			sum_ = (sumLength -len(sum_))*'0' + sum_
 		else : 
@@ -350,12 +361,26 @@ class FixedWidthIntegerMultiplier() :
 			raise ValueError('width of n1 should be "{0}" bits, but is "{1}" bits'.format(self.inputBits, len(n1)))
 
 		output = self.multiplier.multiply(n1, n2, self.correctionIterations)
+		output = self.truncateMostSignificantZeros(output)
+		assert len(output) <= 48
 		if len(output) > self.outputBits : 
 			output = output[:self.outputBits]
 		else : 
 			output = '0'*(self.outputBits - len(output)) + output
 		return output
 
+	def truncateMostSignificantZeros(self, n) : 
+		zerosFlag = True
+		returnValue = ''
+		for i in range(len(n)) : 
+			if n[i] == '1' :
+				if zerosFlag : 
+					zerosFlag = False 
+				returnValue += n[i]
+			else : 
+				if not zerosFlag : 
+					returnValue += n[i]
+		return returnValue
 
 class FloatingPointIterativeLogarithmicMultiplier() : 
 
