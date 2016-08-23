@@ -289,7 +289,7 @@ class TestFixedWidthIntegerMultiplier() :
 		def setUp(self) : 
 			self.inputBits = 24
 			self.outputBits = 48
-			self.correctionIterations = 1
+			self.correctionIterations = 11
 			self.multiplier = FixedWidthIntegerMultiplier(self.inputBits, self.outputBits, self.correctionIterations)
 
 		def makeFixedWidth(self, n, width) :
@@ -313,12 +313,6 @@ class TestFixedWidthIntegerMultiplier() :
 			print(result_getd)
 			print(len(result_getd))
 			relativeError = self.mod(result_reqd - int(result_getd, base=2))*1.0 / result_reqd
-				
-			# plotting data
-			if relativeError != 0 : 
-				print('\n\t\t' + str(n1) + ' * ' + str(n2) + ' -- ' + str(result_reqd) + ' / ' + str(int(result_getd, base=2)) + ' -- ' + str(relativeError))
-
-			raise SystemExit(0)
 
 			for i in range(1000) : 
 				n1 = random.randint(1, 10000000)
