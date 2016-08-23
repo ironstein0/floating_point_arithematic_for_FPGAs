@@ -362,7 +362,7 @@ class FixedWidthIntegerMultiplier() :
 
 		output = self.multiplier.multiply(n1, n2, self.correctionIterations)
 		output = self.truncateMostSignificantZeros(output)
-		assert len(output) <= 48
+		assert len(output) <= self.outputBits
 		if len(output) > self.outputBits : 
 			output = output[:self.outputBits]
 		else : 
