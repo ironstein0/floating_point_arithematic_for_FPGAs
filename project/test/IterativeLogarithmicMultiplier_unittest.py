@@ -283,6 +283,8 @@ class TestFixedWidthIntegerMultiplier() :
 			self.assertRaises(ValueError, FixedWidthIntegerMultiplier, 10, 's')
 			self.assertRaises(ValueError, FixedWidthIntegerMultiplier, 10, 10.2)
 			self.assertRaises(ValueError, FixedWidthIntegerMultiplier, 10, [])
+			self.assertRaises(ValueError, FixedWidthIntegerMultiplier, 10, 10, 0)
+			self.assertRaises(ValueError, FixedWidthIntegerMultiplier, 10, 10, -1)
 
 	class Multiply(unittest.TestCase) : 
 
@@ -310,8 +312,6 @@ class TestFixedWidthIntegerMultiplier() :
 			n2 = '100100111010100111100000'
 			result_reqd = int(n1, base=2)*int(n2, base=2)
 			result_getd = self.multiplier.multiply(n1, n2)
-			print(result_getd)
-			print(len(result_getd))
 			relativeError = self.mod(result_reqd - int(result_getd, base=2))*1.0 / result_reqd
 
 			for i in range(1000) : 
@@ -330,10 +330,13 @@ class TestFixedWidthIntegerMultiplier() :
 				relativeError = self.mod(result_reqd - int(result_getd, base=2))*1.0 / result_reqd
 				
 				# plotting data
-				if relativeError != 0 : 
-					print('\n\t\t' + str(n1) + ' * ' + str(n2) + ' -- ' + str(result_reqd) + ' / ' + str(int(result_getd, base=2)) + ' -- ' + str(relativeError))
+				# if relativeError != 0 : 
+				# 	print('\n\t\t' + str(n1) + ' * ' + str(n2) + ' -- ' + str(result_reqd) + ' / ' + str(int(result_getd, base=2)) + ' -- ' + str(relativeError))
 
 		def testErrors(self) : 
+			self.assertRaises(ValueError, self.multiplier.multiply, '1001', 10)
+			self.assertRaises(ValueError, self.multiplier.multiply, '1', [])
+			self.assertRaises(ValueError, self.multiplier.multiply, [], '10')
 			self.assertRaises(ValueError, self.multiplier.multiply, '1010', '103')
 			self.assertRaises(ValueError, self.multiplier.multiply, '2', '10010')
 			self.assertRaises(ValueError, self.multiplier.multiply, '1001', '100')
@@ -341,12 +344,25 @@ class TestFixedWidthIntegerMultiplier() :
 
 class TestFloatingPointIterativeLogarithmicMultiplier() :
 	
-	class getBinarySignificand(unittest.TestCase) : 
+	class Constructor(unittest.TestCase) : 
+
+		def testOperation(self) : 
+			pass
 
 		def testErrors(self) : 
-			multiplier = FloatingPointIterativeLogarithmicMultiplier()
-			multiplier.getBinarySignificand(Float())
-			self.assertRaises(AssertionError, multiplier.getBinarySignificand, 10)
+			self.assertRaises(bitstring.CreationError, FloatingPointIterativeLogarithmicMultiplier, length=16)
+			self.assertRaises(ValueError, FloatingPointIterativeLogarithmicMultiplier, correctionIterations=-1)
+
+	class Multiply(unittest.TestCase) : 
+
+		def setUp(self) : 
+			self.multiplier = FloatingPointIterativeLogarithmicMultiplier()
+
+		def testOperation(self) : 
+			pass
+
+		# def testErrors(self) :
+			# self.assertRaises(self.multiplier.multiply, 
 
 if __name__ == '__main__' : 
 
@@ -372,15 +388,15 @@ if __name__ == '__main__' :
 		# TestIntegerIterativeLogarithmicMultiplier.P0_3,
 		
 		#######################
-		# FixedWidthMultiplier 
+		# FixedWidthIntegerMultiplier 
 		#######################
 		# TestFixedWidthIntegerMultiplier.Constructor, 
-		TestFixedWidthIntegerMultiplier.Multiply,
+		# TestFixedWidthIntegerMultiplier.Multiply,
 		
 		#############################################
 		# FloatingPointIterativeLogarithmicMultiplier 
 		#############################################
-		#TestFloatingPointIterativeLogarithmicMultiplier.getBinarySignificand
+		TestFloatingPointIterativeLogarithmicMultiplier.Constructor,
 	]
 
 	for suite in suiteList : 

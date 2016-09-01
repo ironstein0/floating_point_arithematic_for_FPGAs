@@ -56,5 +56,33 @@ def error_vs_correctionIterations() :
 	plt.plot(correctionIterationsList, numIncorrectList)
 	plt.show()
 
+def zeroForAllInputs() : 
+	zeroForAllInputsList = []
+	for i in range(numberOfInputBits+1) : 
+		zeroForAllInputsList.append(0)
 
-error_vs_correctionIterations()
+	for i in range(100) : 
+		print('iteration number : ' + str(i))
+		for correctionIterations in range(1, numberOfInputBits+1) : 
+			multiplier = FixedWidthIntegerMultiplier(numberOfInputBits, numberOfInputBits*2, correctionIterations)
+			
+			relativeErrorNonZeroFlag = True
+			for j in range(100) :
+				n1 = random.randint(minValue, maxValue)
+				n2 = random.randint(minValue, maxValue)
+				result_reqd = n1*n2
+				result_getd = int(multiplier.multiply(bin(n1)[2:], bin(n2)[2:]), base=2)
+				relativeError = mod(result_reqd - result_getd)*1.0/result_reqd
+
+				if(relativeError != 0) :
+					relativeErrorNonZeroFlag = not relativeErrorNonZeroFlag
+					break
+			if relativeErrorNonZeroFlag : 
+				zeroForAllInputsList[correctionIterations] += 1
+
+		print(zeroForAllInputsList)
+
+# result = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 34, 69, 94, 96, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
+
+# error_vs_correctionIterations()
+zeroForAllInputs()

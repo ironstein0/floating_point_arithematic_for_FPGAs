@@ -318,7 +318,7 @@ class FixedWidthIntegerMultiplier() :
 		Raises : 
 			ValueError -- If inputBits is not an integer
 			ValueError -- If outputBits is not an integer
-			ValueError -- If correctionIterations is not an integer
+			ValueError -- If correctionIterations is not an integer > 0
 
 		"""
 
@@ -328,6 +328,8 @@ class FixedWidthIntegerMultiplier() :
 			raise ValueError('"outputBits" should be an integer')
 		if type(correctionIterations) != int : 
 			raise ValueError('"correctionIterations" should be an integer')
+		if not correctionIterations > 0 : 
+			raise ValueError('"correctionIterations" should be an integer > 0')
 
 		self.inputBits = inputBits
 		self.outputBits = outputBits
@@ -354,6 +356,16 @@ class FixedWidthIntegerMultiplier() :
 			ValueError -- If width of n2 is not `inputBits`
 	
 		"""
+
+		if type(n1) != str : 
+			raise ValueError('invalid type "{0}" for n1, should be a string'.format(type(n1)))
+		if type(n2) != str : 
+			raise ValueError('invalid type "{0}" for n2, should be a string'.format(type(n2)))
+
+		if not self.multiplier.validateBinary(n1) : 
+			raise ValueError('"n1" is not a valid binary number')
+		if not self.multiplier.validateBinary(n2) : 
+			raise ValueError('"n2" is not a valid binary number')
 
 		if len(n1) != self.inputBits : 
 			raise ValueError('width of n1 should be "{0}" bits, but is "{1}" bits'.format(self.inputBits, len(n1)))		
@@ -384,8 +396,48 @@ class FixedWidthIntegerMultiplier() :
 
 class FloatingPointIterativeLogarithmicMultiplier() : 
 
-	def __init__(self) : 
-		self.integerMultiplier = IntegerIterativeLogarithmicMultiplier()
+	def __init__(self, length=32, correctionIterations=1) : 
+		"""
+		Args : 
+			length(int) -- length of the floating point number on which the
+				multiplier needs to operate
+			correctionIterations(int) -- number of correction terms to use in 
+				the implementation of the iterative logarithmic multiplier
+
+		Raises : 
+			bitstring.CreationError -- if length is not 32 or 64
+			ValueError -- if correctionIterations is not an integer > 0
+
+		"""
+
+		Float(length=length) 	# assert that length is correct
+		self.integerMultiplier = FixedWidthIntegerMultiplier(length, length*2, correctionIterations)
+
+	def multiply(self, f1, f2) : 
+		"""Multiplies two `Float` instances
+
+		Takes two `Float` instances as an input and generates a new `Float`
+		instance with its value equal to f1.val * f2.val
+
+		Args : 
+			f1(Float) -- First number
+			f2(Float) -- Second number
+
+		Returns : 
+			Float -- Float instance with its value equal to f1.val * f2.val
+
+		Raises : 
+			ValueError -- if either f1 or f2 is not a `Float` instance
+
+		"""
+
+		if not isinstance(f1, Float) : 
+			raise ValueError('f1 should be a "Float" instance')
+		if not isinstance(f2, Float) : 
+			raise ValueError('f2 should be a "Float" instance')
+
+		if f1.length != f2.length : 
+			raise ValueError('f1 and f2 should be both of the same floating point format')
 
 	def getBinarySignificand(self, f) : 
 		assert isinstance(f, Float)
